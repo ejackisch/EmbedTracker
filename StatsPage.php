@@ -5,7 +5,7 @@ $wgExtensionCredits['specialpage'][] = array(
 	'path' => __FILE__,
 	'name' => 'Embed Tracker',
 	'description' => 'Stores info about embed requests from external sites in database',
-	'version' => '0.1'
+	'version' => '0.1',
 	'author' => 'Eric Jackisch'
 );
 
