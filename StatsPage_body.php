@@ -13,43 +13,77 @@ class SpecialStatsPage extends SpecialPage {
 		$articleTitle = $wgRequest->getText('article_title');
 		$this->setHeaders();
 		
-		//if(!$articleTitle){
-		//Read the appropriate stuff from the database
 		$dbr = wfGetDB( DB_SLAVE );
+		$result=array();
 		
 		
-		$res = $dbr->select(
+		if($articleTitle):
+			//Read the appropriate stuff from the database for a single article
+			
+			$res = $dbr->select(
 				'stats',
 				array('article_title', 'first_accessed', 'last_accessed', 'referer', 'hits'),	//select columns
 				'article_title = ' . $dbr->addQuotes($articleTitle), 							//condition
 				__METHOD__,
 				array('ORDER BY' => 'last_accessed DESC')										//options
-		);	
+			);	
+			//Put it all into a simple array
+			foreach ($res as $row):
+				$result[] = $row;
+			endforeach;
 		
-		$result=array();
-		foreach ($res as $row):
-			$result[] = $row;
-		endforeach;
-		
-		//The rest just outputs the HTML for the page content
-		$wgOut->addHTML('Embeds for the article: <a href="' . $wgServer . $wgScript . '/' . $articleTitle . '">' . $articleTitle . '</a>');
-		$this->outputStatsTable($result);
+			//Output the HTML
+			$wgOut->addHTML('<div style="width:80%">');
+			$wgOut->addHTML('Embeds for the article: <a href="' . $wgServer . $wgScript . '/' . $articleTitle . '">' . $articleTitle . '</a> ');
+			$this->outputStatsTable($result, false);
+			$wgOut->addHTML('</div>');
+			
+		else:
+			//Get the data for AL articles from DB
+			
+			$res = $dbr->select(
+				'stats',
+				array('article_title', 'first_accessed', 'last_accessed', 'referer', 'hits'),	//select columns
+				'',
+				__METHOD__,
+				array('ORDER BY' => 'article_title ASC')										//options
+			);	
+			//Group them into an array of 2D arrays, one for each article
+			foreach ($res as $row):
+				$result[$row->article_title][] = $row;
+			endforeach;
+			
+			//Output a table for each articles details
+			foreach($result as $key => $table):
+				$total = count($table);
+				
+				$wgOut->addHTML('<div class="mw-collapsible mw-collapsed" style="width:80%;">');
+				$wgOut->addHTML('Embeds for the article: <a href="' . $wgServer . $wgScript . '/' . $key . '">' . $key . '</a> (Total: ' . $total . ')');
+				$wgOut->addHTML('<div class="mw-collapsible-content">');
+				$this->outputStatsTable($table, true);
+				$wgOut->addHTML('</div></div>');
+			endforeach;
+			
+		endif;
 	}
 	
 	/**
 	 *	Outputs an HTML table with the stats for an article
 	 */
 	function outputStatsTable($data){
-		global $wgOut;
-		$wgOut->addHTML('<table class="wikitable sortable" style="width:80%">');
+		global $wgOut, $wgServer, $wgScript;
+		
+		//$wgOut->addHTML('Embeds for the article: <a href="' . $wgServer . $wgScript . '/' . $title . '">' . $title . '</a> ' . $total);
+		
+		$wgOut->addHTML('<table class="wikitable sortable" style="width:100%">');
 		$wgOut->addHTML('
 			<tr>
 				<th>Referer</th>
-				<th>First Added</th>
-				<th>Last Access Date</th>
-				<th>Total accesses</th>
+				<th style="width:130px;">First Added</th>
+				<th style="width:130px;">Last Access Date</th>
+				<th style="width:75px;">Accesses</th>
 			</tr>
-			');
+		');
 			
 		foreach ($data as $row):
 			$wgOut->addHTML('
