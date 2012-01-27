@@ -101,7 +101,7 @@ function showEmbedsOnArticlePage( &$article, &$content ) {
 			array('referer'),
 			array('article_title' => $titleKey),
 			__METHOD__,
-			array('ORDER BY' => 'hits DESC')
+			array('ORDER BY' => 'last_accessed DESC', 'LIMIT' => '4')
 	);
 	
 	if($res->numRows()):
