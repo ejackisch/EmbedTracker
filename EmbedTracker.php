@@ -1,13 +1,17 @@
 <?php
 /**
  * Embed Tracker:
- * Keeps track of embed requests / referers for each article and displays them on a Special Page
+ * Keeps track of embed requests for each article (via WikiEmbed) and displays them on a Special Page
  *
  * Usage:
- * 	Add require_once("extensions/embedTracker/embedTracker.php"); in LocalSettings.php
- *  and run the SQL query in stats_table.txt to create the DB table.
+ * 	-Add require_once("extensions/embedTracker/embedTracker.php"); in LocalSettings.php
+ *  -Run the SQL query in stats_table.txt to create the DB table.
+ *  -For caching, set $wgEmbedTrackerCache (below) to the desired directory and make sure it
+ *		exists and is writeable.
  */
 if(!defined('MEDIAWIKI'))exit(1);
+
+$wgEmbedTrackerCache = $IP.'/cache/EmbedTracker';
 
 include('StatsPage.php');
 
