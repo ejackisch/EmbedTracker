@@ -13,6 +13,9 @@ include('StatsPage.php');
 
 $wgHooks['MediaWikiPerformAction'][] = 'trackRequest';
 $wgHooks['SkinTemplateToolboxEnd'][] = 'addToolBoxLink';
+$wgHooks['ArticleAfterFetchContent'][] = 'showEmbedsOnArticlePage';
+
+
 
 /**
  * Handles MediaWikiPerformAction event,
@@ -71,6 +74,56 @@ function trackRequest( $output, $article, $title, $user, $request, $wiki ){
 }
 
 
+
+/**
+ * Handles ArticleAfterFetchContent event,
+ * Displays a list of places the article is embeded at the bottom of the article 
+ * (Comment out the ArticleAfterFetchContent hook at the top of this file to disable)
+ */
+function showEmbedsOnArticlePage( &$article, &$content ) {
+	global $wgRequest, $wgServer, $wgScript;
+	
+	//Make sure we're actually on the article view page
+	$action = $wgRequest->getVal( 'action' );
+	if( ($action && $action != 'view') || $wgRequest->getVal('oldid') ):
+		return true;
+	endif;
+	
+	//Get the list of referers for this article
+	$titleKey = $article->getTitle()->getPrefixedDBkey();
+	$dbr = wfGetDB (DB_SLAVE);
+	$res=$dbr->select(
+			'stats',
+			array('referer'),
+			array('article_title' => $titleKey),
+			__METHOD__,
+			array('ORDER BY' => 'hits DESC')
+	);
+	
+	if($res->numRows()):
+	
+		$stats='
+			<br /><hr />
+			<div style="font-size:85%;">
+			This article is being embedded in other sites:
+			<ul class="mw-collapsible mw-collapsed">
+		';
+		
+		foreach ($res as $row):
+			$stats.='<li>'.htmlspecialchars($row->referer).'</li>';
+		endforeach;
+		
+		$stats.='<li>See [' . $wgServer . $wgScript . '/Special:StatsPage?article_title=' . $titleKey . ' Embed Stats] for details</li></ul></div>';
+		
+		$content .= $stats;
+		
+	endif;
+	
+	return true;
+}
+
+
+
 /**
  * Handles SkinTemplateToolboxEnd event,
  * Adds a link to the Stats page to the toolbox (if the theme supports it)
@@ -84,5 +137,5 @@ function addToolBoxLink($template){
 	$pageTitle = $wgArticle->getTitle();
     $pageUrl = $pageTitle->getPrefixedDBkey();
 	echo '<li><a href="' . $wgServer . $wgScript . '/Special:StatsPage?article_title=' . $pageUrl . '">Embed Stats</a></li>';
-	return 1;
+	return true;
 }
