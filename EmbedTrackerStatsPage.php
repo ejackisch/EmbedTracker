@@ -1,5 +1,9 @@
 <?php
+if(!defined('MEDIAWIKI'))exit(1);
 
+/**
+ *	Class for the Special:EmbedTrackerStats page
+ */
 class EmbedTrackerStats extends SpecialPage {
 	function __construct(){
 		parent::__construct('EmbedTrackerStats');

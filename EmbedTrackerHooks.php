@@ -1,12 +1,10 @@
 <?php
-
 if(!defined('MEDIAWIKI'))exit(1);
 
 /**
  * Static class with hook handler functions
  */
 class EmbedTrackerHooks{
-	
 	
 	/**
 	 * Handles MediaWikiPerformAction event,
