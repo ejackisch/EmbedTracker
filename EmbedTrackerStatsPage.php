@@ -5,52 +5,42 @@ class EmbedTrackerStats extends SpecialPage {
 		parent::__construct('EmbedTrackerStats');
 	}
 	
+	
 	/**
-	 *	Builds the content of the Special:StatsPage when it is accessed.
+	 *	Build and output the content of the Special:EmbedTrackerStats page when it is accessed.
 	 */
 	function execute(){
-		global $wgRequest, $wgOut, $wgServer, $wgScript, $wgEmbedTrackerCache;
+		global $wgRequest, $wgEmbedTrackerCache;
 		$articleTitle = $wgRequest->getText('article_title');
 		$this->setHeaders();
-		$dbr = wfGetDB( DB_SLAVE );
-		$result=array();
 		
 		if($articleTitle):	
 			//If we have an article title, get all the data for that article from the DB
-			
-			$res = $dbr->select(
-				'stats',
-				array('article_title', 'first_accessed', 'last_accessed', 'referer', 'hits'),	//select columns
-				'article_title = ' . $dbr->addQuotes($articleTitle), 							//condition
-				__METHOD__,
-				array('ORDER BY' => 'last_accessed DESC')										//options
-			);	
-			
-			//Put it all into a simple array
-			foreach ($res as $row):
-				$result[] = $row;
-			endforeach;
-		
-			//Output the HTML
-			$wgOut->addHTML('<div style="width:80%">');
-			$wgOut->addHTML('Embeds for the article: <a href="' . $wgServer . $wgScript . '/' . $articleTitle . '">' . $articleTitle . '</a> ');
-			$this->outputStatsTable($result, false);
-			$wgOut->addHTML('</div>');
-		
-		
-		
+			$this->singleArticle($articleTitle);		
 		else:	
-			//$articleTitle is false so get the data for ALL articles from DB
-			
-			$cacheFile = $wgEmbedTrackerCache.'/_All.html';
-			if(is_writable($cacheFile) && time() < filemtime($cacheFile) + 60*60*24 ):
+			//No $articleTitle is supplied so get the data for ALL articles from DB
+			$this->allArticles();		
+		endif; 
+	}
+
+	
+	/**
+	 *	Outputs stats page for all articles
+	 */	
+	function allArticles(){
+		global $wgOut, $wgServer, $wgScript, $wgEmbedTrackerCache;
+		$dbr = wfGetDB( DB_SLAVE );
+		$referers=array();
+		
+		$cacheFile = $wgEmbedTrackerCache.'/Special:EmbedTrackerStats.html';
+			if(is_writable($cacheFile) && time() < filemtime($cacheFile) + 60*60*8 ):
 				//If possible, just show a file from cache.
 				$wgOut->addHTML(file_get_contents($cacheFile));
 				$wgOut->addHTML("<p>(Last refreshed: " . date('M j Y \a\t g:iA',filemtime($cacheFile)) . ")</p>");
 			else:
 				//Cache is expired or does not exist, so go to the database and build the page...
 				
-				$res = $dbr->select(
+				$dbResult = $dbr->select(
 					'stats',
 					array('article_title', 'first_accessed', 'last_accessed', 'referer', 'hits'),	//select columns
 					'',
@@ -59,15 +49,15 @@ class EmbedTrackerStats extends SpecialPage {
 				);
 				
 				//Group them into an array of 2D arrays, one for each article
-				foreach ($res as $row):
-					$result[$row->article_title][] = $row;
+				foreach ($dbResult as $row):
+					$referers[$row->article_title][] = $row;
 				endforeach;
 				
 				//Output a table for each articles details
-				foreach($result as $key => $table):
+				foreach($referers as $currentArticleTitle => $table):
 					$total = count($table);
 					$wgOut->addHTML('<div class="mw-collapsible mw-collapsed" style="width:80%;">');
-					$wgOut->addHTML('Embeds for the article: <a href="' . $wgServer . $wgScript . '/' . $key . '">' . $key . '</a> (Total: ' . $total . ')');
+					$wgOut->addHTML('Embeds for the article: <a href="' . $wgServer . $wgScript . '/' . $currentArticleTitle . '">' . $currentArticleTitle . '</a> (Total: ' . $total . ')');
 					$wgOut->addHTML('<div class="mw-collapsible-content">');
 					$this->outputStatsTable($table, true);
 					$wgOut->addHTML('</div></div>');
@@ -77,10 +67,38 @@ class EmbedTrackerStats extends SpecialPage {
 					file_put_contents($cacheFile,$wgOut->getHTML());
 				endif;
 			endif;
-		endif; //if(!$articleTitle)
 	}
+
+
+	/**
+	 *	Outputs stats page for a single article
+	 *	@param $articleTitle 
+	 *		String with Article Title (as in database) to display info for.
+	 */	
+	function singleArticle($articleTitle){
+		global $wgOut, $wgServer, $wgScript;
+		$dbr = wfGetDB( DB_SLAVE );
+		$referers=array();
 	
-	
+		$dbResult = $dbr->select(
+				'stats',
+				array('article_title', 'first_accessed', 'last_accessed', 'referer', 'hits'),	//select columns
+				'article_title = ' . $dbr->addQuotes($articleTitle), 							//condition
+				__METHOD__,
+				array('ORDER BY' => 'last_accessed DESC')										//options
+		);	
+			
+		//Put it all into a simple array
+		foreach ($dbResult as $row):
+			$referers[] = $row;
+		endforeach;
+		
+		//Output the HTML
+		$wgOut->addHTML('<div style="width:80%">');
+		$wgOut->addHTML('Embeds for the article: <a href="' . $wgServer . $wgScript . '/' . $articleTitle . '">' . $articleTitle . '</a> ');
+		$this->outputStatsTable($referers, false);
+		$wgOut->addHTML('</div>');
+	}
 	
 	
 	/**

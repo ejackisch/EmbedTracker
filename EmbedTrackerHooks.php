@@ -7,6 +7,7 @@ if(!defined('MEDIAWIKI'))exit(1);
  */
 class EmbedTrackerHooks{
 	
+	
 	/**
 	 * Handles MediaWikiPerformAction event,
 	 * Stores requests from WikiEmbed or EmbedPage in DB
@@ -64,7 +65,6 @@ class EmbedTrackerHooks{
 	}
 	
 	
-	
 	/**
 	 * Handles ArticleAfterFetchContent event,
 	 * Appends a list of places the article is embeded at the bottom of the article 
@@ -103,7 +103,7 @@ class EmbedTrackerHooks{
 				$stats.='<li>'.htmlspecialchars($row->referer).'</li>';
 			endforeach;
 			
-			$stats.='<li>See [' . $wgServer . $wgScript . '/Special:StatsPage?article_title=' . $titleKey . ' Embed Stats] for details</li></ul></div>';
+			$stats.='<li>See [' . $wgServer . $wgScript . '/Special:EmbedTrackerStats?article_title=' . $titleKey . ' Embed Stats] for details</li></ul></div>';
 			
 			$content .= $stats;
 			
@@ -111,7 +111,6 @@ class EmbedTrackerHooks{
 		
 		return true;
 	}
-	
 	
 	
 	/**
@@ -126,7 +125,7 @@ class EmbedTrackerHooks{
 		
 		$pageTitle = $wgArticle->getTitle();
 		$pageUrl = $pageTitle->getPrefixedDBkey();
-		echo '<li><a href="' . $wgServer . $wgScript . '/Special:StatsPage?article_title=' . $pageUrl . '">Embed Stats</a></li>';
+		echo '<li><a href="' . $wgServer . $wgScript . '/Special:EmbedTrackerStats?article_title=' . $pageUrl . '">Embed Stats</a></li>';
 		return true;
 	}
 
