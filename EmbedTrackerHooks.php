@@ -99,10 +99,10 @@ class EmbedTrackerHooks{
 			');
 			
 			foreach ($res as $row):
-				$wgOut->addHTML('<li>'.htmlspecialchars($row->referer).'</li>');
+				$wgOut->addHTML('<li><a href="'.htmlspecialchars($row->referer).'">'.htmlspecialchars($row->referer).'</a></li>');
 			endforeach;
 			
-			$wgOut->addHTML('<li>See <a href="' . $wgServer . $wgScript . '/Special:EmbedTrackerStats?article_title=' . $titleKey . '"> Embed Stats</a> for details</li></ul></div>');
+			$wgOut->addHTML('<li>See <a href="' . $wgServer . $wgScript . '/Special:EmbedTrackerStats?article_title=' . $titleKey . '"> Embed Stats</a> for more</li></ul></div>');
 			
 		endif;
 		
