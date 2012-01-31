@@ -1,12 +1,9 @@
 <?php
 
-class SpecialStatsPage extends SpecialPage {
+class EmbedTrackerStats extends SpecialPage {
 	function __construct(){
-		parent::__construct('StatsPage');
+		parent::__construct('EmbedTrackerStats');
 	}
-
-	
-
 	
 	/**
 	 *	Builds the content of the Special:StatsPage when it is accessed.
@@ -88,6 +85,8 @@ class SpecialStatsPage extends SpecialPage {
 	
 	/**
 	 *	Outputs an HTML table with the stats for an article
+	 *	@param $data 
+	 *		2d array consisting of referers and their details
 	 */
 	function outputStatsTable($data){
 		global $wgOut, $wgServer, $wgScript;
@@ -118,5 +117,4 @@ class SpecialStatsPage extends SpecialPage {
 		$wgOut->addHTML('</table>');
 	}
 	
-}
-?>
+};
