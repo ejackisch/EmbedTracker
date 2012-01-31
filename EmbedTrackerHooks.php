@@ -66,12 +66,12 @@ class EmbedTrackerHooks{
 	
 	
 	/**
-	 * Handles ArticleAfterFetchContent event,
+	 * Handles ArticleViewFooter event,
 	 * Appends a list of places the article is embeded at the bottom of the article 
 	 * (Comment out the ArticleAfterFetchContent hook in EmbedTracker.php to disable)
 	 */
-	static function showEmbedsOnArticlePage ( &$article, &$content ) {
-		global $wgRequest, $wgServer, $wgScript;
+	static function showEmbedsOnArticlePage ($article) {
+		global $wgRequest, $wgServer, $wgScript, $wgOut;
 		
 		//Make sure we're actually on the article view page
 		$action = $wgRequest->getVal( 'action' );
@@ -87,25 +87,22 @@ class EmbedTrackerHooks{
 				array('referer'),
 				array('article_title' => $titleKey),
 				__METHOD__,
-				array('ORDER BY' => 'last_accessed DESC', 'LIMIT' => '4')
+				array('ORDER BY' => 'last_accessed DESC', 'LIMIT' => '5')
 		);
 		
 		if($res->numRows()):
-		
-			$stats='
+			$wgOut->addHTML('
 				<br /><hr />
 				<div style="font-size:85%;">
 				This article is being embedded in other sites:
 				<ul class="mw-collapsible mw-collapsed">
-			';
+			');
 			
 			foreach ($res as $row):
-				$stats.='<li>'.htmlspecialchars($row->referer).'</li>';
+				$wgOut->addHTML('<li>'.htmlspecialchars($row->referer).'</li>');
 			endforeach;
 			
-			$stats.='<li>See [' . $wgServer . $wgScript . '/Special:EmbedTrackerStats?article_title=' . $titleKey . ' Embed Stats] for details</li></ul></div>';
-			
-			$content .= $stats;
+			$wgOut->addHTML('<li>See <a href="' . $wgServer . $wgScript . '/Special:EmbedTrackerStats?article_title=' . $titleKey . '"> Embed Stats</a> for details</li></ul></div>');
 			
 		endif;
 		

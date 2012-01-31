@@ -33,4 +33,4 @@ require_once('EmbedTrackerHooks.php');
 
 $wgHooks['MediaWikiPerformAction'][] = 'EmbedTrackerHooks::trackRequest';
 $wgHooks['SkinTemplateToolboxEnd'][] = 'EmbedTrackerHooks::toolBoxLink';
-$wgHooks['ArticleAfterFetchContent'][] = 'EmbedTrackerHooks::showEmbedsOnArticlePage';
+$wgHooks['ArticleViewFooter'][] = 'EmbedTrackerHooks::showEmbedsOnArticlePage';
