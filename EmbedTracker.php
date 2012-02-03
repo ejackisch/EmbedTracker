@@ -7,7 +7,7 @@
  * Usage:
  * 	-Add require_once("extensions/embedTracker/embedTracker.php"); in LocalSettings.php
  *  -Run the SQL query in AddStatsTable.sql to create the DB table (substituting your SQL table prefix
- *		before 'stats')
+ *		before 'EmbedTrackerStats')
  *  -For caching, set $wgEmbedTrackerCache (below) to the desired directory and make sure it
  *		exists and is writeable.
  */
