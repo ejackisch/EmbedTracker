@@ -1,3 +1,4 @@
+--Substitute 'wiki' on the next line with your DB prefix
 CREATE TABLE `wikiEmbedTrackerStats` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `article_title` varchar(255) NOT NULL,
