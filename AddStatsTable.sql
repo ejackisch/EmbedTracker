@@ -1,4 +1,4 @@
-CREATE TABLE `wikistats` (
+CREATE TABLE `wikiEmbedTrackerStats` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `article_title` varchar(255) NOT NULL,
   `referer` varchar(255) NOT NULL,

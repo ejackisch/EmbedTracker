@@ -36,7 +36,7 @@ class EmbedTrackerHooks{
 			//Check for an existing record
 			$dbr = wfGetDB (DB_SLAVE);
 			$res=$dbr->select(
-					'stats',
+					'EmbedTrackerStats',
 					array('id','hits'),
 					array('referer'=> $referer, 'article_title' => $articleTitle)
 			);
@@ -47,13 +47,13 @@ class EmbedTrackerHooks{
 			if( $res->numRows() ):
 				$row=$res->fetchObject();
 				$dbw->update(
-						'stats',
+						'EmbedTrackerStats',
 						array('hits'=>($row->hits+1),'last_accessed'=>time()),
 						array('id = '.$row->id)
 				);
 			else:
 				$dbw->insert(
-						'stats',
+						'EmbedTrackerStats',
 						array('article_title' => $articleTitle, 'referer' => $referer, 'first_accessed' => $time, 'last_accessed' => $time, 'hits' => 1 )
 				);
 			endif;
@@ -81,7 +81,7 @@ class EmbedTrackerHooks{
 		$titleKey = $article->getTitle()->getPrefixedDBkey();
 		$dbr = wfGetDB (DB_SLAVE);
 		$res=$dbr->select(
-				'stats',
+				'EmbedTrackerStats',
 				array('referer'),
 				array('article_title' => $titleKey),
 				__METHOD__,

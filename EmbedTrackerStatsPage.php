@@ -45,7 +45,7 @@ class EmbedTrackerStats extends SpecialPage {
 				//Cache is expired or does not exist, so go to the database and build the page...
 				
 				$dbResult = $dbr->select(
-					'stats',
+					'EmbedTrackerStats',
 					array('article_title', 'first_accessed', 'last_accessed', 'referer', 'hits'),	//select columns
 					'',
 					__METHOD__,
@@ -85,7 +85,7 @@ class EmbedTrackerStats extends SpecialPage {
 		$referers=array();
 	
 		$dbResult = $dbr->select(
-				'stats',
+				'EmbedTrackerStats',
 				array('article_title', 'first_accessed', 'last_accessed', 'referer', 'hits'),	//select columns
 				'article_title = ' . $dbr->addQuotes($articleTitle), 							//condition
 				__METHOD__,
