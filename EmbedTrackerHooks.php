@@ -100,7 +100,7 @@ class EmbedTrackerHooks{
 				$wgOut->addHTML('<li><a href="'.htmlspecialchars($row->referer).'">'.htmlspecialchars($row->referer).'</a></li>');
 			endforeach;
 			
-			$wgOut->addHTML('<li>See <a href="' . $wgServer . $wgScript . '/Special:EmbedTrackerStats?article_title=' . $titleKey . '"> Embed Stats</a> for more</li></ul></div>');
+			$wgOut->addHTML('<li>See <a href="' . $wgServer . $wgScript . '/Special:EmbedTrackerStats?article_title=' . $titleKey . '"> Embed Stats</a> for more and up-to-date information</li></ul></div>');
 			
 		endif;
 		
