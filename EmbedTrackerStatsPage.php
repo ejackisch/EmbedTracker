@@ -99,7 +99,7 @@ class EmbedTrackerStats extends SpecialPage {
 		
 		//Output the HTML
 		$wgOut->addHTML('<div style="width:80%">');
-		$wgOut->addHTML('Embeds for the article: <a href="' . $wgServer . $wgScript . '/' . $articleTitle . '">' . $articleTitle . '</a> ');
+		//$wgOut->addHTML('Embeds for the article: <a href="' . $wgServer . $wgScript . '/' . $articleTitle . '">' . $articleTitle . '</a> ');
 		$this->outputStatsTable($referers, false);
 		$wgOut->addHTML('</div>');
 	}
