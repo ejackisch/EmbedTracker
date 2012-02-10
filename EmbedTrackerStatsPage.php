@@ -97,11 +97,16 @@ class EmbedTrackerStats extends SpecialPage {
 			$referers[] = $row;
 		endforeach;
 		
-		//Output the HTML
-		$wgOut->addHTML('<div style="width:80%">');
-		$wgOut->addHTML('Embeds for <a href="' . $wgServer . $wgScript . '/' . $articleTitle . '">' . $articleTitle . '</a> ');
-		$this->outputStatsTable($referers, false);
-		$wgOut->addHTML('</div>');
+		if(empty($referers)):
+			$wgOut->addHTML('<p>No embeds have been logged for this article yet.</p>');
+		else:
+			//Output the HTML
+			$wgOut->addHTML('<div style="width:80%">');
+			$wgOut->addHTML('Embeds for <a href="' . $wgServer . $wgScript . '/' . $articleTitle . '">' . $articleTitle . '</a> ');
+			$this->outputStatsTable($referers, false);
+			$wgOut->addHTML('</div>');
+		endif;
+		
 	}
 	
 	
