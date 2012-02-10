@@ -90,7 +90,7 @@ class EmbedTrackerHooks{
 		
 		if($res->numRows()):
 			$wgOut->addHTML('
-				<br /><hr />
+				<br /><hr style="clear:both;" />
 				<div style="font-size:85%;">
 				This article is being embedded in other sites:
 				<ul class="mw-collapsible mw-collapsed">
