@@ -61,7 +61,7 @@ class EmbedTrackerStats extends SpecialPage {
 				foreach($referers as $currentArticleTitle => $table):
 					$total = count($table);
 					$wgOut->addHTML('<div class="mw-collapsible mw-collapsed" style="width:80%;">');
-					$wgOut->addHTML('Embeds for the article: <a href="' . $wgServer . $wgScript . '/' . $currentArticleTitle . '">' . $currentArticleTitle . '</a> (Total: ' . $total . ')');
+					$wgOut->addHTML('<a href="' . $wgServer . $wgScript . '/' . $currentArticleTitle . '">' . $currentArticleTitle . '</a> (Total: ' . $total . ')');
 					$wgOut->addHTML('<div class="mw-collapsible-content">');
 					$this->outputStatsTable($table, true);
 					$wgOut->addHTML('</div></div>');
@@ -99,7 +99,7 @@ class EmbedTrackerStats extends SpecialPage {
 		
 		//Output the HTML
 		$wgOut->addHTML('<div style="width:80%">');
-		//$wgOut->addHTML('Embeds for the article: <a href="' . $wgServer . $wgScript . '/' . $articleTitle . '">' . $articleTitle . '</a> ');
+		$wgOut->addHTML('Embeds for <a href="' . $wgServer . $wgScript . '/' . $articleTitle . '">' . $articleTitle . '</a> ');
 		$this->outputStatsTable($referers, false);
 		$wgOut->addHTML('</div>');
 	}
